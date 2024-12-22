@@ -1,10 +1,10 @@
 import React from "react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import axios from "../services/authService"; // Importing the axios instance with registerUser function
 
-// Validation Schema
+// Validation schema
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
@@ -17,16 +17,18 @@ const RegistrationForm = () => {
     resolver: yupResolver(schema),
   });
 
-    const onSubmit = async (data) => {
-        try {
-        // Use registerUser function from the imported axios service
-        const response = await axios.registerUser(data); 
-        alert(response.data.message); // Display the response message from backend
-        } catch (err) {
-        console.error(err);
-        alert(err.response?.data?.message || "An error occurred");
-        }
-    };
+  const onSubmit = async (data) => {
+    try {
+      // Make API call
+      const response = await axios.post("http://localhost:5000/api/auth/register", data);
+
+      // Provide feedback to the user
+      alert(response.data.message);
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || "Registration failed");
+    }
+  };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
@@ -42,7 +44,6 @@ const RegistrationForm = () => {
             />
             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
           </div>
-
           <div>
             <input
               type="email"
@@ -52,7 +53,6 @@ const RegistrationForm = () => {
             />
             {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
           </div>
-
           <div>
             <input
               type="password"
@@ -62,7 +62,6 @@ const RegistrationForm = () => {
             />
             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
           </div>
-
           <div>
             <select
               {...register("role")}
@@ -76,15 +75,12 @@ const RegistrationForm = () => {
             </select>
             {errors.role && <p className="text-red-500 text-sm">{errors.role.message}</p>}
           </div>
-
-          <div>
-            <button
-              type="submit"
-              className="w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
-            >
-              Register
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          >
+            Register
+          </button>
         </form>
       </div>
     </div>
