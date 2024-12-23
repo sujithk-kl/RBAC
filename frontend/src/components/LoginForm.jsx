@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode"; // Corrected named import
+import { jwtDecode } from "jwt-decode";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -13,6 +13,7 @@ const schema = yup.object().shape({
 });
 
 const LoginForm = () => {
+  const [role, setRole] = useState("Team Member"); // Default role
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
   });
@@ -21,16 +22,22 @@ const LoginForm = () => {
 
   const onSubmit = async (data) => {
     try {
+      // Make the login request
       const response = await axios.post("http://localhost:5000/api/auth/login", data);
       const token = response.data.token;
 
-      localStorage.setItem("token", token);
-
-      // Use jwtDecode correctly here
-      const decoded = jwtDecode(token); // Corrected usage
+      // Use jwtDecode to get role and name from token
+      const decoded = jwtDecode(token);
       console.log("Decoded Token:", decoded);
 
-      // Store role and name in localStorage
+      // Check if the selected role matches the role in the token
+      if (decoded.role !== role) {
+        alert("The selected role does not match the role in the token. Please try again.");
+        return; // Stop the login process
+      }
+
+      // Store the token, role, and name in localStorage
+      localStorage.setItem("token", token);
       localStorage.setItem("role", decoded.role);
       localStorage.setItem("name", decoded.name);
 
@@ -66,6 +73,18 @@ const LoginForm = () => {
               className="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-500"
             />
             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+          </div>
+          <div>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="w-full p-3 mb-4 border rounded"
+            >
+              <option value="CEO">CEO</option>
+              <option value="Manager">Manager</option>
+              <option value="Team Leader">Team Leader</option>
+              <option value="Team Member">Team Member</option>
+            </select>
           </div>
           <button
             type="submit"

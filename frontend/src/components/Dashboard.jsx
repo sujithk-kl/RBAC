@@ -63,7 +63,7 @@ const Dashboard = () => {
     <div className="flex flex-col justify-center items-center h-screen bg-gray-100">
       <div className="w-full max-w-3xl p-8 bg-white rounded shadow">
         <h2 className="text-2xl font-bold text-center mb-6">
-          Welcome, {role} {name}
+          Welcome, {name} ({role})
         </h2>
         <p className="text-lg text-center text-gray-700 mb-4">{actions}</p>
         <ul className="space-y-4">
