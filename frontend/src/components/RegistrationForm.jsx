@@ -3,6 +3,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 // Validation schema
 const schema = yup.object().shape({
@@ -17,6 +18,8 @@ const RegistrationForm = () => {
     resolver: yupResolver(schema),
   });
 
+  const navigate = useNavigate(); // Initialize useNavigate
+
   const onSubmit = async (data) => {
     try {
       // Make API call
@@ -24,6 +27,9 @@ const RegistrationForm = () => {
 
       // Provide feedback to the user
       alert(response.data.message);
+
+      // Redirect to login page after successful registration
+      navigate("/login");
     } catch (error) {
       console.error(error);
       alert(error.response?.data?.message || "Registration failed");
