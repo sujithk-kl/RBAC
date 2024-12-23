@@ -2,7 +2,9 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 const User = require("../models/User");
+const LogModel = require("../models/Log"); // Log model
 const hashPassword = require("../utils/hashPassword");
+const { encrypt, decrypt } = require("../utils/aesEncryption");
 
 // Register a new user
 exports.register = async (req, res) => {
@@ -59,10 +61,42 @@ exports.login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
-    
 
     res.status(200).json({ message: "Login successful", token });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// Save an encrypted log
+exports.saveLog = async (req, res) => {
+  const { logMessage } = req.body;
+
+  try {
+    // Encrypt the log message
+    const encryptedLog = encrypt(logMessage);
+
+    // Save the encrypted log to the database
+    await LogModel.create({ log: encryptedLog });
+
+    res.status(200).json({ message: "Log saved successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error saving log", error: err.message });
+  }
+};
+
+// Retrieve and decrypt logs
+exports.getLogs = async (req, res) => {
+  try {
+    const logs = await LogModel.find(); // Retrieve logs from the database
+    const decryptedLogs = logs.map((log) => ({
+      id: log._id,
+      log: decrypt(log.log),  // Decrypt each log
+      createdAt: log.createdAt,
+    }));
+
+    res.status(200).json({ logs: decryptedLogs });
+  } catch (err) {
+    res.status(500).json({ message: "Error retrieving logs", error: err.message });
   }
 };

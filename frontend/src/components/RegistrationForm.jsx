@@ -36,6 +36,11 @@ const RegistrationForm = () => {
     }
   };
 
+  // Function to navigate to login page
+  const goToLogin = () => {
+    navigate("/login");
+  };
+
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
@@ -88,6 +93,17 @@ const RegistrationForm = () => {
             Register
           </button>
         </form>
+
+        {/* Login Button */}
+        <div className="text-center mt-4">
+          <p className="text-sm text-gray-600">Already have an account?</p>
+          <button
+            onClick={goToLogin}
+            className="text-blue-500 hover:text-blue-600 mt-2"
+          >
+            Login here
+          </button>
+        </div>
       </div>
     </div>
   );
