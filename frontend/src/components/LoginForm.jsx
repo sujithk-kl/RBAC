@@ -26,20 +26,20 @@ const LoginForm = () => {
       const response = await axios.post("http://localhost:5000/api/auth/login", data);
       const token = response.data.token;
 
-      // Use jwtDecode to get role and name from token
+      // Decode the JWT token to get the user information
       const decoded = jwtDecode(token);
       console.log("Decoded Token:", decoded);
 
-      // Check if the selected role matches the role in the token
-      if (decoded.role !== role) {
-        alert("The selected role does not match the role in the token. Please try again.");
-        return; // Stop the login process
-      }
-
-      // Store the token, role, and name in localStorage
+      // Store the token and user info in localStorage
       localStorage.setItem("token", token);
       localStorage.setItem("role", decoded.role);
       localStorage.setItem("name", decoded.name);
+
+      // Check if the selected role matches the role in the token
+      if (decoded.role !== role) {
+        alert("Access denied: Insufficient permissions");
+        return; // Stop the login process
+      }
 
       alert("Login successful!");
 

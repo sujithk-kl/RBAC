@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 
-const ProtectedRoute = ({ children, role }) => {
+const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
   const userRole = localStorage.getItem("role");
 
@@ -10,8 +10,8 @@ const ProtectedRoute = ({ children, role }) => {
     return <Navigate to="/login" replace />;
   }
 
-  // If a role is specified, ensure the user's role matches
-  if (role && userRole !== role) {
+  // If allowedRoles are specified, ensure the user's role matches one of them
+  if (allowedRoles && !allowedRoles.includes(userRole)) {
     alert("Access Denied: Insufficient permissions.");
     return <Navigate to="/dashboard" replace />;
   }
