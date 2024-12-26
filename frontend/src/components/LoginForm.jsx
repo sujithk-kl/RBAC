@@ -14,7 +14,11 @@ const schema = yup.object().shape({
 
 const LoginForm = () => {
   const [role, setRole] = useState("Team Member"); // Default role
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(schema),
   });
 
@@ -44,7 +48,7 @@ const LoginForm = () => {
       alert("Login successful!");
 
       // Redirect to dashboard after successful login
-      navigate("/dashboard"); 
+      navigate("/dashboard");
     } catch (error) {
       console.error(error);
       alert(error.response?.data?.message || "Login failed");
@@ -52,33 +56,43 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white rounded shadow">
-        <h2 className="text-2xl font-bold text-center mb-4">Login</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-400 to-indigo-600">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+      <h1 className="absolute top-8 left-8 text-7xl font-extrabold bg-gradient-to-r from-blue-500 via-green-500 to-indigo-500 bg-clip-text text-transparent drop-shadow-lg transform transition-transform hover:scale-105">
+  ZeroShield
+</h1>
+        <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">Welcome Back!</h2>
+        <p className="text-center text-gray-600 mb-6">Sign in to access your dashboard</p>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
             <input
               type="email"
               placeholder="Email"
+              id="email"
               {...register("email")}
-              className="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+            {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
           </div>
           <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
             <input
               type="password"
               placeholder="Password"
+              id="password"
               {...register("password")}
-              className="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+            {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
           </div>
           <div>
+            <label htmlFor="role" className="block text-sm font-medium text-gray-700">Select Role</label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full p-3 mb-4 border rounded"
+              id="role"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 bg-white rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             >
               <option value="CEO">CEO</option>
               <option value="Manager">Manager</option>
@@ -88,11 +102,14 @@ const LoginForm = () => {
           </div>
           <button
             type="submit"
-            className="w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             Login
           </button>
         </form>
+        <p className="text-center text-sm text-gray-600 mt-6">
+          Don't have an account? <a href="/register" className="text-indigo-600 hover:underline">Register here</a>
+        </p>
       </div>
     </div>
   );

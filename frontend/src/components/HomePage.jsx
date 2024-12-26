@@ -9,10 +9,9 @@ const HomePage = () => {
       style={{ backgroundImage: `url(${backgroundImage})` }} // Set the background image dynamically
     >
       {/* Company logo positioned in the top-left corner */}
-      <h1 className="absolute top-8 left-8 text-6xl font-extrabold text-white bg-gradient-to-r from-blue-500 via-green-500 to-indigo-500 bg-clip-text text-transparent">
-        ZeroShield
-      </h1>
-
+      <h1 className="absolute top-8 left-8 text-7xl font-extrabold bg-gradient-to-r from-blue-500 via-green-500 to-indigo-500 bg-clip-text text-transparent drop-shadow-lg transform transition-transform hover:scale-105">
+  ZeroShield
+</h1>
       {/* Buttons in the top-right corner */}
       <div className="absolute top-8 right-8 space-x-4">
         <Link
