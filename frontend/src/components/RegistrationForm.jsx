@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
+import loginImage from "/home/flower/RBAC/frontend/src/components/login.jpg"; // Adjust path if necessary
 
 // Validation schema
 const schema = yup.object().shape({
@@ -43,8 +44,15 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-400 to-indigo-600">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+    <div
+      className="flex justify-end items-center min-h-screen"
+      style={{
+        backgroundImage: `url(${loginImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg bg-opacity-80 mr-80">
         <h1 className="absolute top-8 left-8 text-7xl font-extrabold bg-gradient-to-r from-blue-500 via-green-500 to-indigo-500 bg-clip-text text-transparent drop-shadow-lg transform transition-transform hover:scale-105">
           ZeroShield
         </h1>
