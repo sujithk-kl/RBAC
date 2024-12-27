@@ -1,11 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import dashboardImage from "/home/flower/RBAC/frontend/src/components/login.jpg"; // Adjust path if necessary
 
 const Dashboard = () => {
   // Retrieve the role and name from localStorage
   const role = localStorage.getItem("role");
   const name = localStorage.getItem("name");
-  const navigate = useNavigate(); // Navigation hook to redirect to task page
+  const navigate = useNavigate(); // Navigation hook to redirect
 
   // Ensure the user is logged in and has a valid role
   if (!role || !name) {
@@ -13,85 +14,43 @@ const Dashboard = () => {
     navigate("/login"); // Redirect to login if role or name is not found
   }
 
-  // Define role-based options and actions
-  const roleDetails = {
-    CEO: {
-      options: [
-        "View Company Metrics",
-        "Manage High-Level Strategy",
-        "View All Team Members",
-        "Approve Budget",
-      ],
-      action: "You can access company-wide performance metrics.",
-      taskPath: "/ceo-tasks",
-    },
-    Manager: {
-      options: [
-        "Assign Tasks to Team Leaders",
-        "View Team Performance",
-        "Schedule Meetings",
-        "Manage Projects",
-      ],
-      action: "You can assign tasks and monitor team progress.",
-      taskPath: "/manager-tasks",
-    },
-    "Team Leader": {
-      options: [
-        "Distribute Tasks to Team Members",
-        "Track Task Progress",
-        "Report to Manager",
-        "Review Team Outputs",
-      ],
-      action: "You can review tasks and lead your team effectively.",
-      taskPath: "/team-leader-tasks",
-    },
-    "Team Member": {
-      options: [
-        "View Assigned Tasks",
-        "Submit Task Updates",
-        "Request Feedback",
-        "Collaborate with Team",
-      ],
-      action: "You can manage your assigned tasks.",
-      taskPath: "/team-member-tasks",
-    },
+  // Define the task path based on the user's role
+  const roleTaskPaths = {
+    CEO: "/ceo-tasks",
+    Manager: "/manager-tasks",
+    "Team Leader": "/team-leader-tasks",
+    "Team Member": "/team-member-tasks",
   };
 
-  const currentRoleDetails = roleDetails[role] || {
-    options: ["No options available"],
-    action: "No specific actions available for your role.",
-    taskPath: null,
-  };
+  const taskPath = roleTaskPaths[role] || "/tasks";
 
-  // Function to redirect to the correct task page
-  const handleTaskClick = () => {
-    if (currentRoleDetails.taskPath) {
-      navigate(currentRoleDetails.taskPath);
-    } else {
-      alert("No tasks available");
-    }
+  // Function to redirect to the appropriate task page
+  const handleDashboardClick = () => {
+    navigate(taskPath); // Redirect to the role-specific task page
   };
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen bg-gray-100">
-      <div className="w-full max-w-3xl p-8 bg-white rounded shadow">
-        <h2 className="text-2xl font-bold text-center mb-6">
-          Welcome, {name} ({role})
+    <div
+      className="flex justify-end items-center min-h-screen"
+      style={{
+        backgroundImage: `url(${dashboardImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg bg-opacity-80 mr-80">
+        <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">
+          Welcome, {name}
         </h2>
-        <p className="text-lg text-center text-gray-700 mb-4">
-          {currentRoleDetails.action}
+        <p className="text-center text-gray-600 mb-8">
+          Access your personalized dashboard with role-specific tasks.
         </p>
-        <ul className="space-y-4">
-          {currentRoleDetails.options.map((option, index) => (
-            <li
-              key={index}
-              className="p-4 bg-blue-100 text-blue-800 rounded hover:bg-blue-200 cursor-pointer text-center"
-              onClick={handleTaskClick}
-            >
-              {option}
-            </li>
-          ))}
-        </ul>
+        <button
+          onClick={handleDashboardClick}
+          className="w-full py-3 bg-blue-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition-all"
+        >
+          Go to Dashboard
+        </button>
       </div>
     </div>
   );
