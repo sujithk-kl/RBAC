@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 const CEOTasks = () => {
   // State for assigned tasks
   const [assignedTasks, setAssignedTasks] = useState([]);
-  
+
   // State for project details
   const [projectDetails, setProjectDetails] = useState({
     title: "",
@@ -15,7 +15,7 @@ const CEOTasks = () => {
   // State for assigned projects
   const [assignedProjects, setAssignedProjects] = useState([]);
   const [showProjects, setShowProjects] = useState(false);
-  
+
   // State for showing assigned tasks
   const [showTasks, setShowTasks] = useState(false); // For toggling tasks display
 
@@ -69,26 +69,80 @@ const CEOTasks = () => {
     setShowProjects((prevShow) => !prevShow);
   };
 
-  // Toggle visibility of tasks
-  const handleShowTasks = () => {
-    setShowTasks((prevState) => !prevState);
+  // Open tasks and projects in a new window
+  const handleOpenInNewTab = () => {
+    const newWindow = window.open("", "_blank"); // Open a new tab
+
+    newWindow.document.write("<html><head><title>CEO View</title></head><body>");
+    newWindow.document.write("<h2>Assigned Tasks by Manager</h2>");
+
+    if (assignedTasks.length === 0) {
+      newWindow.document.write("<p>No tasks assigned yet.</p>");
+    } else {
+      newWindow.document.write("<ul>");
+      assignedTasks.forEach((task, index) => {
+        newWindow.document.write(`
+          <li>
+            <p><strong>Task:</strong> ${task.task}</p>
+            <p><strong>Team Leader:</strong> ${task.teamLeader}</p>
+            <p><strong>Team Members:</strong> ${task.teamMembers}</p>
+            <p><strong>Deadline:</strong> ${task.deadline}</p>
+          </li>
+        `);
+      });
+      newWindow.document.write("</ul>");
+    }
+
+    newWindow.document.write("<h2>Assigned Projects</h2>");
+
+    if (assignedProjects.length === 0) {
+      newWindow.document.write("<p>No projects assigned yet.</p>");
+    } else {
+      newWindow.document.write("<ul>");
+      assignedProjects.forEach((project, index) => {
+        newWindow.document.write(`
+          <li>
+            <h4>${project.title}</h4>
+            <p><strong>Manager:</strong> ${project.manager}</p>
+            <p><strong>Description:</strong> ${project.description}</p>
+            <p><strong>Budget:</strong> $${project.budget}</p>
+          </li>
+        `);
+      });
+      newWindow.document.write("</ul>");
+    }
+    newWindow.document.write("</body></html>");
+    newWindow.document.close(); // Close the document to render the content
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    alert("Logged out successfully!");
+    // Redirect to the login page or clear session storage as needed
+    window.location.href = "/login";
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-4xl p-8 bg-white rounded shadow-lg">
+    <div className="flex flex-col items-center min-h-screen bg-gray-100">
+      <div className="relative w-full max-w-4xl p-8 bg-white rounded shadow-lg">
         {/* Header */}
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
           CEO View Assigned Tasks & Projects
         </h2>
 
-        {/* Button to show/hide tasks */}
-        <div className="flex justify-center mb-6">
+        {/* Top-right buttons */}
+        <div className="absolute top-4 right-4 flex gap-4">
           <button
-            onClick={handleShowTasks}
-            className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+            onClick={handleOpenInNewTab}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
           >
-            LOG
+            Log
+          </button>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200"
+          >
+            Logout
           </button>
         </div>
 
