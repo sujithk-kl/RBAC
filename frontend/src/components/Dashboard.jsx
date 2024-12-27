@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import dashboardImage from "/home/flower/RBAC/frontend/src/components/login.jpg"; // Adjust path if necessary
+import dashboardImage from "../components/login.jpg"; // Adjust path if necessary
 
 const Dashboard = () => {
   // Retrieve the role and name from localStorage

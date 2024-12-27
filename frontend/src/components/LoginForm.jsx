@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import loginImage from "/home/flower/RBAC/frontend/src/components/login.jpg"; // Adjust path if necessary
+import loginImage from "../components/login.jpg"; // Adjust path if necessary
 
 // Validation schema
 const schema = yup.object().shape({
@@ -27,8 +27,8 @@ const LoginForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      // Make the login request
-      const response = await axios.post("http://localhost:5000/api/auth/login", data);
+      // Use the VITE_API_BASE_URL environment variable for the API URL
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, data);
       const token = response.data.token;
 
       // Decode the JWT token to get the user information
