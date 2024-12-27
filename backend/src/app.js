@@ -4,13 +4,22 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
-const axios = require("axios"); // Add Axios for HTTP requests
-
-const app = express();
+const axios = require("axios"); // For pinging your app
 const cors = require("cors");
 
+const app = express();
+
+// Configure CORS to allow specific origins (like your Vercel app)
+const corsOptions = {
+  origin: 'https://zeroshield.vercel.app', // Add the Vercel app URL here
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // You can modify the allowed methods if needed
+  allowedHeaders: ['Content-Type', 'Authorization'], // You can add other headers if needed
+  credentials: true // Enable cookies or other credentials, if required
+};
+
+app.use(cors(corsOptions)); // Use the CORS middleware with the configured options
+
 // Middleware
-app.use(cors());
 app.use(bodyParser.json());
 
 // Routes
