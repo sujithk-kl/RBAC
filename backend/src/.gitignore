@@ -1,3 +1,8 @@
+# Environment variables
 .env
-/node_modules
-/*-lock.json
+
+# Node modules
+node_modules/
+
+# Lock files
+*-lock.json
