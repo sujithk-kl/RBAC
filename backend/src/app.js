@@ -9,12 +9,23 @@ const cors = require("cors");
 
 const app = express();
 
-// Configure CORS to allow specific origins (like your Vercel app)
+// Configure CORS to allow both production and development origins
+const allowedOrigins = [
+  'https://zeroshield.vercel.app', // Production URL
+  'http://localhost:5173' // Development URL
+];
+
 const corsOptions = {
-  origin: 'https://zeroshield.vercel.app', // Add the Vercel app URL here
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // You can modify the allowed methods if needed
-  allowedHeaders: ['Content-Type', 'Authorization'], // You can add other headers if needed
-  credentials: true // Enable cookies or other credentials, if required
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+  credentials: true, // Enable cookies or other credentials
 };
 
 app.use(cors(corsOptions)); // Use the CORS middleware with the configured options
@@ -53,8 +64,5 @@ const pingWebsite = () => {
 
 // Start pinging the website after the app starts
 pingWebsite();
-
-// Start the server (put this after everything is set up)
-
 
 module.exports = app;
