@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ManagerTasks = () => {
   const [teamLeader, setTeamLeader] = useState("");
@@ -7,13 +8,15 @@ const ManagerTasks = () => {
   const [deadline, setDeadline] = useState("");
   const [message, setMessage] = useState("");
   const [assignedTasks, setAssignedTasks] = useState([]);
-  const [editIndex, setEditIndex] = useState(null);  // Index for editing task
+  const [editIndex, setEditIndex] = useState(null); // Index for editing task
   const [editTaskDetails, setEditTaskDetails] = useState({
     task: "",
     teamLeader: "",
     teamMembers: "",
     deadline: "",
   });
+
+  const navigate = useNavigate();
 
   // Load tasks from localStorage on component mount
   useEffect(() => {
@@ -26,33 +29,22 @@ const ManagerTasks = () => {
   const handleAddTask = (e) => {
     e.preventDefault();
 
-    // Perform validation or send the data to an API (optional)
     if (!teamLeader || !teamMembers || !task || !deadline) {
       setMessage("Please fill in all fields");
       return;
     }
 
-    // Create the new task object
     const newTask = { task, teamLeader, teamMembers, deadline };
-
-    // Add the new task to the assigned tasks array
     const updatedTasks = [...assignedTasks, newTask];
     setAssignedTasks(updatedTasks);
-
-    // Store the updated tasks in localStorage
     localStorage.setItem("assignedTasks", JSON.stringify(updatedTasks));
-
-    // Display success message
     setMessage("Task successfully assigned!");
-
-    // Clear the form after submission
     setTeamLeader("");
     setTeamMembers("");
     setTask("");
     setDeadline("");
   };
 
-  // Handle Edit task button
   const handleEditTask = (index) => {
     const taskToEdit = assignedTasks[index];
     setEditIndex(index);
@@ -64,7 +56,6 @@ const ManagerTasks = () => {
     });
   };
 
-  // Handle Save edited task
   const handleSaveEdit = (e) => {
     e.preventDefault();
 
@@ -76,12 +67,9 @@ const ManagerTasks = () => {
     const updatedTasks = [...assignedTasks];
     updatedTasks[editIndex] = editTaskDetails;
     setAssignedTasks(updatedTasks);
-
-    // Save the updated tasks to localStorage
     localStorage.setItem("assignedTasks", JSON.stringify(updatedTasks));
-
     setMessage("Task updated successfully!");
-    setEditIndex(null); // Clear edit mode
+    setEditIndex(null);
     setEditTaskDetails({
       task: "",
       teamLeader: "",
@@ -90,29 +78,38 @@ const ManagerTasks = () => {
     });
   };
 
-  // Handle Delete task button
   const handleDeleteTask = (index) => {
     const updatedTasks = assignedTasks.filter((_, i) => i !== index);
     setAssignedTasks(updatedTasks);
-
-    // Remove the deleted task from localStorage
     localStorage.setItem("assignedTasks", JSON.stringify(updatedTasks));
     setMessage("Task deleted successfully!");
+  };
+
+  const handleLogout = () => {
+    // Clear any session or token (if applicable)
+    localStorage.removeItem("userToken"); // Example: Clearing a token
+    navigate("/login"); // Redirect to the login page
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div className="w-full max-w-3xl p-8 bg-white rounded shadow">
-        <h2 className="text-2xl font-bold text-center mb-6">Manager Task Page</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Manager Task Page</h2>
+          <button
+            onClick={handleLogout}
+            className="py-2 px-4 bg-red-500 text-white rounded"
+          >
+            Logout
+          </button>
+        </div>
 
-        {/* Display message (success or error) */}
         {message && (
           <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">
             {message}
           </div>
         )}
 
-        {/* Form for adding or editing task */}
         <form onSubmit={editIndex !== null ? handleSaveEdit : handleAddTask}>
           <div className="space-y-4">
             <div>
@@ -195,7 +192,6 @@ const ManagerTasks = () => {
           </div>
         </form>
 
-        {/* Display Assigned Tasks */}
         {assignedTasks.length > 0 && (
           <div className="mt-8">
             <h3 className="text-xl font-semibold mb-4">Assigned Tasks</h3>
