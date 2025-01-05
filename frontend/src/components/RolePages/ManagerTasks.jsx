@@ -8,7 +8,7 @@ const ManagerTasks = () => {
   const [deadline, setDeadline] = useState("");
   const [message, setMessage] = useState("");
   const [assignedTasks, setAssignedTasks] = useState([]);
-  const [editIndex, setEditIndex] = useState(null); // Index for editing task
+  const [editIndex, setEditIndex] = useState(null);
   const [editTaskDetails, setEditTaskDetails] = useState({
     task: "",
     teamLeader: "",
@@ -16,13 +16,18 @@ const ManagerTasks = () => {
     deadline: "",
   });
 
+  const [assignedProjects, setAssignedProjects] = useState([]);
   const navigate = useNavigate();
 
-  // Load tasks from localStorage on component mount
   useEffect(() => {
     const storedTasks = JSON.parse(localStorage.getItem("assignedTasks"));
     if (storedTasks) {
       setAssignedTasks(storedTasks);
+    }
+
+    const storedProjects = JSON.parse(localStorage.getItem("assignedProjects"));
+    if (storedProjects) {
+      setAssignedProjects(storedProjects);
     }
   }, []);
 
@@ -59,7 +64,12 @@ const ManagerTasks = () => {
   const handleSaveEdit = (e) => {
     e.preventDefault();
 
-    if (!editTaskDetails.teamLeader || !editTaskDetails.teamMembers || !editTaskDetails.task || !editTaskDetails.deadline) {
+    if (
+      !editTaskDetails.teamLeader ||
+      !editTaskDetails.teamMembers ||
+      !editTaskDetails.task ||
+      !editTaskDetails.deadline
+    ) {
       setMessage("Please fill in all fields");
       return;
     }
@@ -86,136 +96,208 @@ const ManagerTasks = () => {
   };
 
   const handleLogout = () => {
-    // Clear any session or token (if applicable)
-    localStorage.removeItem("userToken"); // Example: Clearing a token
-    navigate("/login"); // Redirect to the login page
+    localStorage.removeItem("userToken");
+    navigate("/login");
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="w-full max-w-3xl p-8 bg-white rounded shadow">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Manager Task Page</h2>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4 sm:px-8">
+      <div className="w-full max-w-4xl p-6 sm:p-8 bg-white rounded-lg shadow-md">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-800">Manager Task Page</h2>
           <button
             onClick={handleLogout}
-            className="py-2 px-4 bg-red-500 text-white rounded"
+            className="mt-4 sm:mt-0 py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600"
           >
             Logout
           </button>
         </div>
 
         {message && (
-          <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">
+          <div className="mb-4 p-3 bg-green-100 text-green-800 rounded">
             {message}
           </div>
         )}
 
-        <form onSubmit={editIndex !== null ? handleSaveEdit : handleAddTask}>
-          <div className="space-y-4">
+        {/* Form to Add/Edit Task */}
+        <form
+          onSubmit={editIndex !== null ? handleSaveEdit : handleAddTask}
+          className="space-y-6"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="teamLeader" className="block text-sm font-semibold">
+              <label
+                htmlFor="teamLeader"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Team Leader
               </label>
               <input
                 id="teamLeader"
                 type="text"
-                value={editIndex !== null ? editTaskDetails.teamLeader : teamLeader}
+                value={
+                  editIndex !== null ? editTaskDetails.teamLeader : teamLeader
+                }
                 onChange={(e) =>
                   editIndex !== null
-                    ? setEditTaskDetails({ ...editTaskDetails, teamLeader: e.target.value })
+                    ? setEditTaskDetails({
+                        ...editTaskDetails,
+                        teamLeader: e.target.value,
+                      })
                     : setTeamLeader(e.target.value)
                 }
-                className="w-full p-2 mt-2 border rounded"
+                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter team leader name"
                 required
               />
             </div>
             <div>
-              <label htmlFor="teamMembers" className="block text-sm font-semibold">
+              <label
+                htmlFor="teamMembers"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Team Members
               </label>
               <input
                 id="teamMembers"
                 type="text"
-                value={editIndex !== null ? editTaskDetails.teamMembers : teamMembers}
+                value={
+                  editIndex !== null ? editTaskDetails.teamMembers : teamMembers
+                }
                 onChange={(e) =>
                   editIndex !== null
-                    ? setEditTaskDetails({ ...editTaskDetails, teamMembers: e.target.value })
+                    ? setEditTaskDetails({
+                        ...editTaskDetails,
+                        teamMembers: e.target.value,
+                      })
                     : setTeamMembers(e.target.value)
                 }
-                className="w-full p-2 mt-2 border rounded"
+                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter team members (comma separated)"
                 required
               />
             </div>
-            <div>
-              <label htmlFor="task" className="block text-sm font-semibold">
-                Task
-              </label>
-              <input
-                id="task"
-                type="text"
-                value={editIndex !== null ? editTaskDetails.task : task}
-                onChange={(e) =>
-                  editIndex !== null
-                    ? setEditTaskDetails({ ...editTaskDetails, task: e.target.value })
-                    : setTask(e.target.value)
-                }
-                className="w-full p-2 mt-2 border rounded"
-                placeholder="Enter task description"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="deadline" className="block text-sm font-semibold">
-                Deadline
-              </label>
-              <input
-                id="deadline"
-                type="datetime-local"
-                value={editIndex !== null ? editTaskDetails.deadline : deadline}
-                onChange={(e) =>
-                  editIndex !== null
-                    ? setEditTaskDetails({ ...editTaskDetails, deadline: e.target.value })
-                    : setDeadline(e.target.value)
-                }
-                className="w-full p-2 mt-2 border rounded"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full py-2 mt-6 bg-blue-600 text-white rounded"
-            >
-              {editIndex !== null ? "Save Changes" : "Assign Task"}
-            </button>
           </div>
+          <div>
+            <label
+              htmlFor="task"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Task
+            </label>
+            <input
+              id="task"
+              type="text"
+              value={editIndex !== null ? editTaskDetails.task : task}
+              onChange={(e) =>
+                editIndex !== null
+                  ? setEditTaskDetails({ ...editTaskDetails, task: e.target.value })
+                  : setTask(e.target.value)
+              }
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter task description"
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="deadline"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Deadline
+            </label>
+            <input
+              id="deadline"
+              type="datetime-local"
+              value={
+                editIndex !== null ? editTaskDetails.deadline : deadline
+              }
+              onChange={(e) =>
+                editIndex !== null
+                  ? setEditTaskDetails({
+                      ...editTaskDetails,
+                      deadline: e.target.value,
+                    })
+                  : setDeadline(e.target.value)
+              }
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            {editIndex !== null ? "Save Changes" : "Assign Task"}
+          </button>
         </form>
 
+        {/* Display Assigned Tasks */}
         {assignedTasks.length > 0 && (
           <div className="mt-8">
-            <h3 className="text-xl font-semibold mb-4">Assigned Tasks</h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              Assigned Tasks
+            </h3>
             <ul className="space-y-4">
               {assignedTasks.map((assignedTask, index) => (
-                <li key={index} className="p-4 bg-blue-100 text-blue-800 rounded">
-                  <p><strong>Task:</strong> {assignedTask.task}</p>
-                  <p><strong>Team Leader:</strong> {assignedTask.teamLeader}</p>
-                  <p><strong>Team Members:</strong> {assignedTask.teamMembers}</p>
-                  <p><strong>Deadline:</strong> {assignedTask.deadline}</p>
+                <li
+                  key={index}
+                  className="p-4 bg-blue-100 text-blue-800 rounded-lg shadow"
+                >
+                  <p>
+                    <strong>Task:</strong> {assignedTask.task}
+                  </p>
+                  <p>
+                    <strong>Team Leader:</strong> {assignedTask.teamLeader}
+                  </p>
+                  <p>
+                    <strong>Team Members:</strong> {assignedTask.teamMembers}
+                  </p>
+                  <p>
+                    <strong>Deadline:</strong> {assignedTask.deadline}
+                  </p>
                   <div className="flex justify-between mt-4">
                     <button
                       onClick={() => handleEditTask(index)}
-                      className="px-4 py-2 bg-yellow-500 text-white rounded"
+                      className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDeleteTask(index)}
-                      className="px-4 py-2 bg-red-500 text-white rounded"
+                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                     >
                       Delete
                     </button>
                   </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Display Projects Assigned by CEO */}
+        {assignedProjects.length > 0 && (
+          <div className="mt-8">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              Projects Assigned by CEO
+            </h3>
+            <ul className="space-y-4">
+              {assignedProjects.map((project, index) => (
+                <li
+                  key={index}
+                  className="p-4 bg-gray-100 text-gray-800 rounded-lg shadow"
+                >
+                  <h4 className="text-lg font-bold">{project.title}</h4>
+                  <p>
+                    <strong>Manager:</strong> {project.manager}
+                  </p>
+                  <p>
+                    <strong>Description:</strong> {project.description}
+                  </p>
+                  <p>
+                    <strong>Budget:</strong> ${project.budget}
+                  </p>
                 </li>
               ))}
             </ul>
