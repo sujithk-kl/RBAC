@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import the useNavigate hook
 
 const LogPage = () => {
-  const [assignedTasks, setAssignedTasks] = useState([]);
+  const [managerTasks, setManagerTasks] = useState([]);
+  const [teamLeaderTasks, setTeamLeaderTasks] = useState([]); // State for Team Leader tasks
   const [editingTask, setEditingTask] = useState(null);
   const [updatedTask, setUpdatedTask] = useState({
     task: "",
@@ -15,25 +16,38 @@ const LogPage = () => {
 
   // Fetch tasks from localStorage on page load
   useEffect(() => {
-    const storedTasks = JSON.parse(localStorage.getItem("assignedTasks"));
-    if (storedTasks) {
-      setAssignedTasks(storedTasks);
+    const storedManagerTasks = JSON.parse(localStorage.getItem("assignedTasks"));
+    const storedTeamLeaderTasks = JSON.parse(localStorage.getItem("teamLeaderTasks"));
+
+    if (storedManagerTasks) {
+      setManagerTasks(storedManagerTasks);
+    }
+    if (storedTeamLeaderTasks) {
+      setTeamLeaderTasks(storedTeamLeaderTasks);
     }
   }, []);
 
   // Function to handle editing a task
-  const handleEdit = (task, index) => {
-    setEditingTask(index);
+  const handleEdit = (task, index, isTeamLeaderTask) => {
+    setEditingTask({ index, isTeamLeaderTask });
     setUpdatedTask(task);
   };
 
   // Function to handle saving the edited task
   const handleSaveEdit = () => {
-    const updatedTasks = [...assignedTasks];
-    updatedTasks[editingTask] = updatedTask;
+    if (editingTask.isTeamLeaderTask) {
+      const updatedTasks = [...teamLeaderTasks];
+      updatedTasks[editingTask.index] = updatedTask;
 
-    setAssignedTasks(updatedTasks);
-    localStorage.setItem("assignedTasks", JSON.stringify(updatedTasks));
+      setTeamLeaderTasks(updatedTasks);
+      localStorage.setItem("teamLeaderTasks", JSON.stringify(updatedTasks));
+    } else {
+      const updatedTasks = [...managerTasks];
+      updatedTasks[editingTask.index] = updatedTask;
+
+      setManagerTasks(updatedTasks);
+      localStorage.setItem("assignedTasks", JSON.stringify(updatedTasks));
+    }
 
     // Reset editing state
     setEditingTask(null);
@@ -46,11 +60,16 @@ const LogPage = () => {
   };
 
   // Function to handle deleting a task
-  const handleDelete = (index) => {
-    const updatedTasks = assignedTasks.filter((_, i) => i !== index);
-
-    setAssignedTasks(updatedTasks);
-    localStorage.setItem("assignedTasks", JSON.stringify(updatedTasks));
+  const handleDelete = (index, isTeamLeaderTask) => {
+    if (isTeamLeaderTask) {
+      const updatedTasks = teamLeaderTasks.filter((_, i) => i !== index);
+      setTeamLeaderTasks(updatedTasks);
+      localStorage.setItem("teamLeaderTasks", JSON.stringify(updatedTasks));
+    } else {
+      const updatedTasks = managerTasks.filter((_, i) => i !== index);
+      setManagerTasks(updatedTasks);
+      localStorage.setItem("assignedTasks", JSON.stringify(updatedTasks));
+    }
   };
 
   return (
@@ -67,10 +86,11 @@ const LogPage = () => {
 
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Log Page</h2>
 
-        {/* Display Assigned Tasks */}
-        {assignedTasks.length > 0 ? (
+        {/* Display Manager Assigned Tasks */}
+        <h3 className="text-xl font-semibold text-gray-700 mt-6">Tasks Assigned by Manager</h3>
+        {managerTasks.length > 0 ? (
           <div className="space-y-4">
-            {assignedTasks.map((task, index) => (
+            {managerTasks.map((task, index) => (
               <div key={index} className="p-4 bg-blue-100 text-blue-800 rounded-lg shadow">
                 <p>
                   <strong>Task:</strong> {task.task}
@@ -89,13 +109,13 @@ const LogPage = () => {
                 <div className="flex gap-2 mt-4">
                   <button
                     className="bg-yellow-400 text-white px-4 py-2 rounded"
-                    onClick={() => handleEdit(task, index)}
+                    onClick={() => handleEdit(task, index, false)}
                   >
                     Edit
                   </button>
                   <button
                     className="bg-red-500 text-white px-4 py-2 rounded"
-                    onClick={() => handleDelete(index)}
+                    onClick={() => handleDelete(index, false)}
                   >
                     Delete
                   </button>
@@ -104,7 +124,42 @@ const LogPage = () => {
             ))}
           </div>
         ) : (
-          <p>No tasks assigned yet.</p>
+          <p>No tasks assigned by manager yet.</p>
+        )}
+
+        {/* Display Team Leader Assigned Tasks */}
+        <h3 className="text-xl font-semibold text-gray-700 mt-6">Tasks Assigned by Team Leader</h3>
+        {teamLeaderTasks.length > 0 ? (
+          <div className="space-y-4">
+            {teamLeaderTasks.map((task, index) => (
+              <div key={index} className="p-4 bg-green-100 text-green-800 rounded-lg shadow">
+                <p>
+                  <strong>Task:</strong> {task.task}
+                </p>
+                <p>
+                  <strong>Assigned To:</strong> {task.member}
+                </p>
+
+                {/* Edit and Delete Buttons */}
+                <div className="flex gap-2 mt-4">
+                  <button
+                    className="bg-yellow-400 text-white px-4 py-2 rounded"
+                    onClick={() => handleEdit(task, index, true)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded"
+                    onClick={() => handleDelete(index, true)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No tasks assigned by Team Leader yet.</p>
         )}
 
         {/* Edit Form (Appears when editing a task) */}
@@ -124,24 +179,6 @@ const LogPage = () => {
                   className="w-full p-2 mt-1 border border-gray-300 rounded"
                   value={updatedTask.task}
                   onChange={(e) => setUpdatedTask({ ...updatedTask, task: e.target.value })}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-semibold text-gray-700">Team Leader:</label>
-                <input
-                  type="text"
-                  className="w-full p-2 mt-1 border border-gray-300 rounded"
-                  value={updatedTask.teamLeader}
-                  onChange={(e) => setUpdatedTask({ ...updatedTask, teamLeader: e.target.value })}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-semibold text-gray-700">Team Members:</label>
-                <input
-                  type="text"
-                  className="w-full p-2 mt-1 border border-gray-300 rounded"
-                  value={updatedTask.teamMembers}
-                  onChange={(e) => setUpdatedTask({ ...updatedTask, teamMembers: e.target.value })}
                 />
               </div>
               <div className="mb-4">
