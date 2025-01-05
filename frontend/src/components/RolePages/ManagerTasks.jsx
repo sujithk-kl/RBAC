@@ -208,10 +208,8 @@ const ManagerTasks = () => {
             </label>
             <input
               id="deadline"
-              type="datetime-local"
-              value={
-                editIndex !== null ? editTaskDetails.deadline : deadline
-              }
+              type="date"
+              value={editIndex !== null ? editTaskDetails.deadline : deadline}
               onChange={(e) =>
                 editIndex !== null
                   ? setEditTaskDetails({
@@ -226,83 +224,53 @@ const ManagerTasks = () => {
           </div>
           <button
             type="submit"
-            className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="w-full py-3 bg-blue-600 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {editIndex !== null ? "Save Changes" : "Assign Task"}
+            {editIndex !== null ? "Save Task" : "Assign Task"}
           </button>
         </form>
 
         {/* Display Assigned Tasks */}
-        {assignedTasks.length > 0 && (
-          <div className="mt-8">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">
-              Assigned Tasks
-            </h3>
-            <ul className="space-y-4">
-              {assignedTasks.map((assignedTask, index) => (
-                <li
-                  key={index}
-                  className="p-4 bg-blue-100 text-blue-800 rounded-lg shadow"
-                >
-                  <p>
-                    <strong>Task:</strong> {assignedTask.task}
-                  </p>
-                  <p>
-                    <strong>Team Leader:</strong> {assignedTask.teamLeader}
-                  </p>
-                  <p>
-                    <strong>Team Members:</strong> {assignedTask.teamMembers}
-                  </p>
-                  <p>
-                    <strong>Deadline:</strong> {assignedTask.deadline}
-                  </p>
-                  <div className="flex justify-between mt-4">
-                    <button
-                      onClick={() => handleEditTask(index)}
-                      className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteTask(index)}
-                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                    >
-                      Delete
-                    </button>
+        <div className="mt-6">
+          <h3 className="text-xl font-semibold text-gray-800">Assigned Tasks</h3>
+          <ul className="space-y-4 mt-4">
+            {assignedTasks.map((task, index) => (
+              <li
+                key={index}
+                className="p-4 bg-gray-100 text-gray-700 rounded-lg shadow"
+              >
+                <div className="flex justify-between items-center">
+                  <div>
+                    <strong className="block">Task:</strong>
+                    <p>{task.task}</p>
                   </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Display Projects Assigned by CEO */}
-        {assignedProjects.length > 0 && (
-          <div className="mt-8">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">
-              Projects Assigned by CEO
-            </h3>
-            <ul className="space-y-4">
-              {assignedProjects.map((project, index) => (
-                <li
-                  key={index}
-                  className="p-4 bg-gray-100 text-gray-800 rounded-lg shadow"
-                >
-                  <h4 className="text-lg font-bold">{project.title}</h4>
-                  <p>
-                    <strong>Manager:</strong> {project.manager}
-                  </p>
-                  <p>
-                    <strong>Description:</strong> {project.description}
-                  </p>
-                  <p>
-                    <strong>Budget:</strong> ${project.budget}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+                  <div className="ml-4">
+                    <strong className="block">Team Leader:</strong>
+                    <p>{task.teamLeader}</p>
+                  </div>
+                  <div className="ml-4">
+                    <strong className="block">Deadline:</strong>
+                    <p>{task.deadline}</p>
+                  </div>
+                </div>
+                <div className="mt-4 flex justify-end space-x-4">
+                  <button
+                    onClick={() => handleEditTask(index)}
+                    className="px-4 py-2 text-white bg-yellow-500 rounded"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteTask(index)}
+                    className="px-4 py-2 text-white bg-red-500 rounded"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ const TeamLeaderPage = () => {
   useEffect(() => {
     const storedMembers = JSON.parse(localStorage.getItem("teamMembers"));
     const storedTasks = JSON.parse(localStorage.getItem("teamLeaderTasks"));
-    const storedManagerTasks = JSON.parse(localStorage.getItem("managerAssignedTasks")); // Fetch manager's tasks
+    const storedManagerTasks = JSON.parse(localStorage.getItem("assignedTasks")); // Fetch manager's tasks
 
     if (storedMembers) setTeamMembers(storedMembers);
     if (storedTasks) setAssignedTasks(storedTasks);
@@ -61,20 +61,20 @@ const TeamLeaderPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="w-full max-w-3xl p-8 bg-white rounded shadow">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-3xl p-8 bg-white rounded-lg shadow-lg space-y-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">Team Leader Page</h2>
           <button
             onClick={handleLogout}
-            className="py-2 px-4 bg-red-500 text-white rounded"
+            className="py-2 px-4 bg-red-500 text-white rounded-lg"
           >
             Logout
           </button>
         </div>
 
         {message && (
-          <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">
+          <div className="mb-4 p-2 bg-green-100 text-green-700 rounded-lg">
             {message}
           </div>
         )}
@@ -82,7 +82,7 @@ const TeamLeaderPage = () => {
         {/* Add Team Member */}
         <form onSubmit={handleAddMember} className="mb-8">
           <h3 className="text-xl font-semibold mb-4">Add Team Member</h3>
-          <div className="flex space-x-4">
+          <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
             <input
               type="text"
               value={teamMember}
@@ -92,7 +92,7 @@ const TeamLeaderPage = () => {
             />
             <button
               type="submit"
-              className="py-2 px-4 bg-blue-600 text-white rounded"
+              className="py-2 px-4 bg-blue-600 text-white rounded-lg"
             >
               Add Member
             </button>
@@ -136,7 +136,7 @@ const TeamLeaderPage = () => {
             </div>
             <button
               type="submit"
-              className="w-full py-2 mt-6 bg-blue-600 text-white rounded"
+              className="w-full py-2 mt-6 bg-blue-600 text-white rounded-lg"
             >
               Assign Task
             </button>
@@ -151,7 +151,7 @@ const TeamLeaderPage = () => {
               {managerTasks.map((task, index) => (
                 <li
                   key={index}
-                  className="p-4 bg-yellow-100 text-yellow-800 rounded"
+                  className="p-4 bg-yellow-100 text-yellow-800 rounded-lg"
                 >
                   <p>
                     <strong>Task:</strong> {task.task}
@@ -171,7 +171,7 @@ const TeamLeaderPage = () => {
             <h3 className="text-xl font-semibold mb-4">Assigned Tasks</h3>
             <ul className="space-y-4">
               {assignedTasks.map((assignedTask, index) => (
-                <li key={index} className="p-4 bg-blue-100 text-blue-800 rounded">
+                <li key={index} className="p-4 bg-blue-100 text-blue-800 rounded-lg">
                   <p>
                     <strong>Task:</strong> {assignedTask.task}
                   </p>
