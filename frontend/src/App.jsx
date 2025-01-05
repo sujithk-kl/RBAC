@@ -7,6 +7,7 @@ import RegistrationForm from "./components/RegistrationForm";
 import LoginForm from "./components/LoginForm";
 import Dashboard from "./components/Dashboard";
 import CEOTasks from "./components/RolePages/CEOTasks";
+import LogPage from "./components/RolePages/LogPage";
 import ManagerTasks from "./components/RolePages/ManagerTasks";
 import TeamLeaderTasks from "./components/RolePages/TeamLeaderTasks";
 import TeamMemberTasks from "./components/RolePages/TeamMemberTasks";
@@ -72,6 +73,9 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+        {/* Log Page for CEO */}
+        <Route path="/log" element={<LogPage />} />
       </Routes>
     </Router>
   );
