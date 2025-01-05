@@ -7,7 +7,8 @@ const TeamLeaderPage = () => {
   const [task, setTask] = useState("");
   const [selectedMember, setSelectedMember] = useState("");
   const [assignedTasks, setAssignedTasks] = useState([]);
-  const [managerTasks, setManagerTasks] = useState([]); // Tasks from Manager
+  const [managerTasks, setManagerTasks] = useState([]); // Tasks assigned by Manager
+  const [taskUpdates, setTaskUpdates] = useState([]); // Task updates from team members
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -15,11 +16,13 @@ const TeamLeaderPage = () => {
   useEffect(() => {
     const storedMembers = JSON.parse(localStorage.getItem("teamMembers"));
     const storedTasks = JSON.parse(localStorage.getItem("teamLeaderTasks"));
-    const storedManagerTasks = JSON.parse(localStorage.getItem("assignedTasks")); // Fetch manager's tasks
+    const storedManagerTasks = JSON.parse(localStorage.getItem("assignedTasks")); // Manager's tasks
+    const storedUpdates = JSON.parse(localStorage.getItem("taskUpdates")); // Task updates
 
     if (storedMembers) setTeamMembers(storedMembers);
     if (storedTasks) setAssignedTasks(storedTasks);
-    if (storedManagerTasks) setManagerTasks(storedManagerTasks); // Set manager's tasks
+    if (storedManagerTasks) setManagerTasks(storedManagerTasks);
+    if (storedUpdates) setTaskUpdates(storedUpdates);
   }, []);
 
   // Add a team member
@@ -143,21 +146,37 @@ const TeamLeaderPage = () => {
           </div>
         </form>
 
-        {/* Display Manager Assigned Tasks */}
+        {/* Display Manager's Tasks */}
         {managerTasks.length > 0 && (
           <div className="mb-8">
             <h3 className="text-xl font-semibold mb-4">Tasks Assigned by Manager</h3>
             <ul className="space-y-4">
               {managerTasks.map((task, index) => (
-                <li
-                  key={index}
-                  className="p-4 bg-yellow-100 text-yellow-800 rounded-lg"
-                >
+                <li key={index} className="p-4 bg-yellow-100 text-yellow-800 rounded-lg">
                   <p>
                     <strong>Task:</strong> {task.task}
                   </p>
                   <p>
-                    <strong>Deadline:</strong> {task.deadline}
+                    <strong>Deadline:</strong> {task.deadline || "N/A"}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Display Task Updates */}
+        {taskUpdates.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold mb-4">Task Updates from Team Members</h3>
+            <ul className="space-y-4">
+              {taskUpdates.map((update, index) => (
+                <li key={index} className="p-4 bg-green-100 text-green-800 rounded-lg">
+                  <p>
+                    <strong>Update:</strong> {update.content}
+                  </p>
+                  <p>
+                    <strong>Submitted At:</strong> {update.submittedAt}
                   </p>
                 </li>
               ))}
