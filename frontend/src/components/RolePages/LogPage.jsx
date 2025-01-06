@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 const LogPage = () => {
   const [managerTasks, setManagerTasks] = useState([]);
   const [teamLeaderTasks, setTeamLeaderTasks] = useState([]);
-  const [taskUpdates, setTaskUpdates] = useState([]); // Task updates submitted by team members
-  const [editingTask, setEditingTask] = useState(null); // Task being edited
+  const [taskUpdates, setTaskUpdates] = useState([]);
+  const [editingTask, setEditingTask] = useState(null); // Contains index and task type
   const [updatedTask, setUpdatedTask] = useState({
     task: "",
     teamLeader: "",
     teamMembers: "",
     deadline: "",
+    member: "",
   });
 
   const navigate = useNavigate();
@@ -34,6 +35,11 @@ const LogPage = () => {
 
   // Save changes after editing a task
   const handleSaveEdit = () => {
+    if (!updatedTask.task) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
     if (editingTask.isTeamLeaderTask) {
       const updatedTasks = [...teamLeaderTasks];
       updatedTasks[editingTask.index] = updatedTask;
@@ -53,6 +59,7 @@ const LogPage = () => {
       teamLeader: "",
       teamMembers: "",
       deadline: "",
+      member: "",
     });
   };
 
@@ -82,7 +89,7 @@ const LogPage = () => {
 
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Log Page</h2>
 
-        {/* Display Task Updates */}
+        {/* Task Updates */}
         <h3 className="text-xl font-semibold text-gray-700 mt-6">Task Updates by Team Members</h3>
         {taskUpdates.length > 0 ? (
           <div className="space-y-4">
@@ -101,24 +108,16 @@ const LogPage = () => {
           <p>No task updates submitted yet.</p>
         )}
 
-        {/* Display Manager Assigned Tasks */}
+        {/* Manager Tasks */}
         <h3 className="text-xl font-semibold text-gray-700 mt-6">Tasks Assigned by Manager</h3>
         {managerTasks.length > 0 ? (
           <div className="space-y-4">
             {managerTasks.map((task, index) => (
               <div key={index} className="p-4 bg-blue-100 text-blue-800 rounded-lg shadow">
-                <p>
-                  <strong>Task:</strong> {task.task}
-                </p>
-                <p>
-                  <strong>Team Leader:</strong> {task.teamLeader}
-                </p>
-                <p>
-                  <strong>Team Members:</strong> {task.teamMembers}
-                </p>
-                <p>
-                  <strong>Deadline:</strong> {task.deadline}
-                </p>
+                <p><strong>Task:</strong> {task.task}</p>
+                <p><strong>Team Leader:</strong> {task.teamLeader}</p>
+                <p><strong>Team Members:</strong> {task.teamMembers}</p>
+                <p><strong>Deadline:</strong> {task.deadline}</p>
                 <div className="flex gap-2 mt-4">
                   <button
                     className="bg-yellow-400 text-white px-4 py-2 rounded"
@@ -140,18 +139,14 @@ const LogPage = () => {
           <p>No tasks assigned by manager yet.</p>
         )}
 
-        {/* Display Team Leader Assigned Tasks */}
+        {/* Team Leader Tasks */}
         <h3 className="text-xl font-semibold text-gray-700 mt-6">Tasks Assigned by Team Leader</h3>
         {teamLeaderTasks.length > 0 ? (
           <div className="space-y-4">
             {teamLeaderTasks.map((task, index) => (
               <div key={index} className="p-4 bg-green-100 text-green-800 rounded-lg shadow">
-                <p>
-                  <strong>Task:</strong> {task.task}
-                </p>
-                <p>
-                  <strong>Assigned To:</strong> {task.member}
-                </p>
+                <p><strong>Task:</strong> {task.task}</p>
+                <p><strong>Assigned To:</strong> {task.member}</p>
                 <div className="flex gap-2 mt-4">
                   <button
                     className="bg-yellow-400 text-white px-4 py-2 rounded"
@@ -193,14 +188,46 @@ const LogPage = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-semibold text-gray-700">Deadline:</label>
+                <label className="block text-sm font-semibold text-gray-700">Assigned To:</label>
                 <input
-                  type="datetime-local"
+                  type="text"
                   className="w-full p-2 mt-1 border border-gray-300 rounded"
-                  value={updatedTask.deadline}
-                  onChange={(e) => setUpdatedTask({ ...updatedTask, deadline: e.target.value })}
+                  value={updatedTask.member || ""}
+                  onChange={(e) => setUpdatedTask({ ...updatedTask, member: e.target.value })}
                 />
               </div>
+              {!editingTask.isTeamLeaderTask && (
+                <>
+                  <div className="mb-4">
+                    <label className="block text-sm font-semibold text-gray-700">Team Leader:</label>
+                    <input
+                      type="text"
+                      className="w-full p-2 mt-1 border border-gray-300 rounded"
+                      value={updatedTask.teamLeader}
+                      onChange={(e) => setUpdatedTask({ ...updatedTask, teamLeader: e.target.value })}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-semibold text-gray-700">Team Members:</label>
+                    <input
+                      type="text"
+                      className="w-full p-2 mt-1 border border-gray-300 rounded"
+                      placeholder="Enter comma-separated names"
+                      value={updatedTask.teamMembers}
+                      onChange={(e) => setUpdatedTask({ ...updatedTask, teamMembers: e.target.value })}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-semibold text-gray-700">Deadline:</label>
+                    <input
+                      type="datetime-local"
+                      className="w-full p-2 mt-1 border border-gray-300 rounded"
+                      value={updatedTask.deadline}
+                      onChange={(e) => setUpdatedTask({ ...updatedTask, deadline: e.target.value })}
+                    />
+                  </div>
+                </>
+              )}
               <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
                 Save Changes
               </button>

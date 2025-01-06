@@ -64,120 +64,102 @@ const TeamLeaderPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-3xl p-8 bg-white rounded-lg shadow-lg space-y-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Team Leader Page</h2>
+    <div className="flex flex-col items-center min-h-screen px-6 py-8 sm:px-10 lg:px-12 bg-gradient-to-r from-blue-900 via-green-800 to-teal-700">
+      <div className="w-full max-w-4xl p-8 bg-gradient-to-br from-[#2c3e50] via-[#34495e] to-[#16a085] rounded-3xl shadow-2xl">
+        <h2 className="text-4xl font-extrabold text-center text-white mb-8">
+          Team Leader Dashboard
+        </h2>
+
+        <div className="absolute top-4 right-4 flex gap-4">
+          <button
+            onClick={() => navigate("/log")}
+          >
+           
+          </button>
           <button
             onClick={handleLogout}
-            className="py-2 px-4 bg-red-500 text-white rounded-lg"
+            className="px-4 py-2 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-full shadow-lg hover:scale-105 transition-all duration-300"
           >
             Logout
           </button>
         </div>
 
         {message && (
-          <div className="mb-4 p-2 bg-green-100 text-green-700 rounded-lg">
+          <div className="mb-4 p-3 bg-green-100 text-green-800 rounded">
             {message}
           </div>
         )}
 
         {/* Add Team Member */}
-        <form onSubmit={handleAddMember} className="mb-8">
-          <h3 className="text-xl font-semibold mb-4">Add Team Member</h3>
-          <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+        <form onSubmit={handleAddMember} className="space-y-6 mb-8">
+          <div>
+            <label className="block text-gray-300 font-medium mb-2">Team Member</label>
             <input
               type="text"
               value={teamMember}
               onChange={(e) => setTeamMember(e.target.value)}
-              className="flex-1 p-2 border rounded"
               placeholder="Enter team member name"
+              className="w-full p-4 border-2 border-gray-600 rounded-xl bg-[#1c2833] text-white focus:ring-2 focus:ring-[#5a67d8] focus:outline-none"
             />
-            <button
-              type="submit"
-              className="py-2 px-4 bg-blue-600 text-white rounded-lg"
-            >
-              Add Member
-            </button>
           </div>
+
+          <button
+            type="submit"
+            className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-full hover:from-blue-600 hover:to-teal-600 shadow-xl transition duration-300"
+          >
+            Add Team Member
+          </button>
         </form>
 
         {/* Assign Task */}
-        <form onSubmit={handleAssignTask} className="mb-8">
-          <h3 className="text-xl font-semibold mb-4">Assign Task</h3>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="teamMember" className="block text-sm font-semibold">
-                Select Team Member
-              </label>
-              <select
-                id="teamMember"
-                value={selectedMember}
-                onChange={(e) => setSelectedMember(e.target.value)}
-                className="w-full p-2 mt-2 border rounded"
-              >
-                <option value="">-- Select a team member --</option>
-                {teamMembers.map((member, index) => (
-                  <option key={index} value={member}>
-                    {member}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="task" className="block text-sm font-semibold">
-                Task Description
-              </label>
-              <input
-                id="task"
-                type="text"
-                value={task}
-                onChange={(e) => setTask(e.target.value)}
-                className="w-full p-2 mt-2 border rounded"
-                placeholder="Enter task description"
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full py-2 mt-6 bg-blue-600 text-white rounded-lg"
+        <form onSubmit={handleAssignTask} className="space-y-6 mb-8">
+          <div>
+            <label className="block text-gray-300 font-medium mb-2">Select Team Member</label>
+            <select
+              value={selectedMember}
+              onChange={(e) => setSelectedMember(e.target.value)}
+              className="w-full p-4 border-2 border-gray-600 rounded-xl bg-[#1c2833] text-white focus:ring-2 focus:ring-[#5a67d8] focus:outline-none"
             >
-              Assign Task
-            </button>
+              <option value="">-- Select a team member --</option>
+              {teamMembers.map((member, index) => (
+                <option key={index} value={member}>
+                  {member}
+                </option>
+              ))}
+            </select>
           </div>
+
+          <div>
+            <label className="block text-gray-300 font-medium mb-2">Task Description</label>
+            <input
+              type="text"
+              value={task}
+              onChange={(e) => setTask(e.target.value)}
+              placeholder="Enter task description"
+              className="w-full p-4 border-2 border-gray-600 rounded-xl bg-[#1c2833] text-white focus:ring-2 focus:ring-[#5a67d8] focus:outline-none"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-full hover:from-blue-600 hover:to-teal-600 shadow-xl transition duration-300"
+          >
+            Assign Task
+          </button>
         </form>
 
         {/* Display Manager's Tasks */}
         {managerTasks.length > 0 && (
-          <div className="mb-8">
-            <h3 className="text-xl font-semibold mb-4">Tasks Assigned by Manager</h3>
-            <ul className="space-y-4">
+          <div className="mt-8 space-y-6">
+            <h3 className="text-3xl font-semibold text-white mb-4">Tasks Assigned by Manager</h3>
+            <ul className="space-y-6">
               {managerTasks.map((task, index) => (
-                <li key={index} className="p-4 bg-yellow-100 text-yellow-800 rounded-lg">
-                  <p>
-                    <strong>Task:</strong> {task.task}
-                  </p>
-                  <p>
-                    <strong>Deadline:</strong> {task.deadline || "N/A"}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Display Task Updates */}
-        {taskUpdates.length > 0 && (
-          <div className="mb-8">
-            <h3 className="text-xl font-semibold mb-4">Task Updates from Team Members</h3>
-            <ul className="space-y-4">
-              {taskUpdates.map((update, index) => (
-                <li key={index} className="p-4 bg-green-100 text-green-800 rounded-lg">
-                  <p>
-                    <strong>Update:</strong> {update.content}
-                  </p>
-                  <p>
-                    <strong>Submitted At:</strong> {update.submittedAt}
-                  </p>
+                <li
+                  key={index}
+                  className="p-5 bg-[#34495e] text-white rounded-lg shadow-md transition-all hover:scale-105 duration-200"
+                >
+                  <p><strong>Task:</strong> {task.task}</p>
+                  <p><strong>Deadline:</strong> {task.deadline || "N/A"}</p>
                 </li>
               ))}
             </ul>
@@ -186,11 +168,14 @@ const TeamLeaderPage = () => {
 
         {/* Display Assigned Tasks */}
         {assignedTasks.length > 0 && (
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Assigned Tasks</h3>
-            <ul className="space-y-4">
+          <div className="mt-8 space-y-6">
+            <h3 className="text-3xl font-semibold text-white mb-4">Assigned Tasks</h3>
+            <ul className="space-y-6">
               {assignedTasks.map((assignedTask, index) => (
-                <li key={index} className="p-4 bg-blue-100 text-blue-800 rounded-lg">
+                <li
+                  key={index}
+                  className="p-5 bg-[#34495e] text-white rounded-lg shadow-md transition-all hover:scale-105 duration-200"
+                >
                   <p>
                     <strong>Task:</strong> {assignedTask.task}
                   </p>

@@ -8,6 +8,7 @@ const ManagerTasks = () => {
   const [deadline, setDeadline] = useState("");
   const [message, setMessage] = useState("");
   const [assignedTasks, setAssignedTasks] = useState([]);
+  const [assignedProjects, setAssignedProjects] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
   const [editTaskDetails, setEditTaskDetails] = useState({
     task: "",
@@ -15,8 +16,7 @@ const ManagerTasks = () => {
     teamMembers: "",
     deadline: "",
   });
-
-  const [assignedProjects, setAssignedProjects] = useState([]);
+  const [showProjects, setShowProjects] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -95,19 +95,32 @@ const ManagerTasks = () => {
     setMessage("Task deleted successfully!");
   };
 
+  const toggleShowProjects = () => {
+    setShowProjects((prevShow) => !prevShow);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("userToken");
     navigate("/login");
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4 sm:px-8">
-      <div className="w-full max-w-4xl p-6 sm:p-8 bg-white rounded-lg shadow-md">
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Manager Task Page</h2>
+    <div className="flex flex-col items-center min-h-screen px-6 py-8 sm:px-10 lg:px-12 bg-gradient-to-r from-blue-900 via-green-800 to-teal-700">
+      <div className="w-full max-w-4xl p-8 bg-gradient-to-br from-[#2c3e50] via-[#34495e] to-[#16a085] rounded-3xl shadow-2xl">
+        <h2 className="text-4xl font-extrabold text-center text-white mb-8">
+          Manager Dashboard
+        </h2>
+
+        <div className="absolute top-4 right-4 flex gap-4">
+          <button
+            onClick={() => navigate("/log")}
+            className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full shadow-lg hover:scale-105 transition-all duration-300"
+          >
+            View Logs
+          </button>
           <button
             onClick={handleLogout}
-            className="mt-4 sm:mt-0 py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600"
+            className="px-4 py-2 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-full shadow-lg hover:scale-105 transition-all duration-300"
           >
             Logout
           </button>
@@ -122,71 +135,41 @@ const ManagerTasks = () => {
         {/* Form to Add/Edit Task */}
         <form
           onSubmit={editIndex !== null ? handleSaveEdit : handleAddTask}
-          className="space-y-6"
+          className="space-y-6 mb-8"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="teamLeader"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Team Leader
-              </label>
-              <input
-                id="teamLeader"
-                type="text"
-                value={
-                  editIndex !== null ? editTaskDetails.teamLeader : teamLeader
-                }
-                onChange={(e) =>
-                  editIndex !== null
-                    ? setEditTaskDetails({
-                        ...editTaskDetails,
-                        teamLeader: e.target.value,
-                      })
-                    : setTeamLeader(e.target.value)
-                }
-                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter team leader name"
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="teamMembers"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Team Members
-              </label>
-              <input
-                id="teamMembers"
-                type="text"
-                value={
-                  editIndex !== null ? editTaskDetails.teamMembers : teamMembers
-                }
-                onChange={(e) =>
-                  editIndex !== null
-                    ? setEditTaskDetails({
-                        ...editTaskDetails,
-                        teamMembers: e.target.value,
-                      })
-                    : setTeamMembers(e.target.value)
-                }
-                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter team members (comma separated)"
-                required
-              />
-            </div>
-          </div>
           <div>
-            <label
-              htmlFor="task"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Task
-            </label>
+            <label className="block text-gray-300 font-medium mb-2">Team Leader</label>
             <input
-              id="task"
+              type="text"
+              value={editIndex !== null ? editTaskDetails.teamLeader : teamLeader}
+              onChange={(e) =>
+                editIndex !== null
+                  ? setEditTaskDetails({ ...editTaskDetails, teamLeader: e.target.value })
+                  : setTeamLeader(e.target.value)
+              }
+              placeholder="Enter team leader name"
+              className="w-full p-4 border-2 border-gray-600 rounded-xl bg-[#1c2833] text-white focus:ring-2 focus:ring-[#5a67d8] focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-300 font-medium mb-2">Team Members</label>
+            <input
+              type="text"
+              value={editIndex !== null ? editTaskDetails.teamMembers : teamMembers}
+              onChange={(e) =>
+                editIndex !== null
+                  ? setEditTaskDetails({ ...editTaskDetails, teamMembers: e.target.value })
+                  : setTeamMembers(e.target.value)
+              }
+              placeholder="Enter team members (comma separated)"
+              className="w-full p-4 border-2 border-gray-600 rounded-xl bg-[#1c2833] text-white focus:ring-2 focus:ring-[#5a67d8] focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-300 font-medium mb-2">Task</label>
+            <input
               type="text"
               value={editIndex !== null ? editTaskDetails.task : task}
               onChange={(e) =>
@@ -194,82 +177,98 @@ const ManagerTasks = () => {
                   ? setEditTaskDetails({ ...editTaskDetails, task: e.target.value })
                   : setTask(e.target.value)
               }
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter task description"
-              required
+              className="w-full p-4 border-2 border-gray-600 rounded-xl bg-[#1c2833] text-white focus:ring-2 focus:ring-[#5a67d8] focus:outline-none"
             />
           </div>
+
           <div>
-            <label
-              htmlFor="deadline"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Deadline
-            </label>
+            <label className="block text-gray-300 font-medium mb-2">Deadline</label>
             <input
-              id="deadline"
               type="date"
               value={editIndex !== null ? editTaskDetails.deadline : deadline}
               onChange={(e) =>
                 editIndex !== null
-                  ? setEditTaskDetails({
-                      ...editTaskDetails,
-                      deadline: e.target.value,
-                    })
+                  ? setEditTaskDetails({ ...editTaskDetails, deadline: e.target.value })
                   : setDeadline(e.target.value)
               }
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
+              className="w-full p-4 border-2 border-gray-600 rounded-xl bg-[#1c2833] text-white focus:ring-2 focus:ring-[#5a67d8] focus:outline-none"
             />
           </div>
+
           <button
             type="submit"
-            className="w-full py-3 bg-blue-600 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-full hover:from-blue-600 hover:to-teal-600 shadow-xl transition duration-300"
           >
             {editIndex !== null ? "Save Task" : "Assign Task"}
           </button>
         </form>
 
         {/* Display Assigned Tasks */}
-        <div className="mt-6">
-          <h3 className="text-xl font-semibold text-gray-800">Assigned Tasks</h3>
-          <ul className="space-y-4 mt-4">
-            {assignedTasks.map((task, index) => (
-              <li
-                key={index}
-                className="p-4 bg-gray-100 text-gray-700 rounded-lg shadow"
-              >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <strong className="block">Task:</strong>
-                    <p>{task.task}</p>
+        <div className="mt-8 space-y-6">
+          <h3 className="text-3xl font-semibold text-white mb-4">Assigned Tasks</h3>
+          {assignedTasks.length === 0 ? (
+            <p className="text-gray-200 text-center">No tasks assigned yet.</p>
+          ) : (
+            <ul className="space-y-6">
+              {assignedTasks.map((task, index) => (
+                <li
+                  key={index}
+                  className="p-5 bg-[#34495e] text-white rounded-lg shadow-md transition-all hover:scale-105 duration-200"
+                >
+                  <p><strong>Task:</strong> {task.task}</p>
+                  <p><strong>Team Leader:</strong> {task.teamLeader}</p>
+                  <p><strong>Team Members:</strong> {task.teamMembers}</p>
+                  <p><strong>Deadline:</strong> {task.deadline}</p>
+                  <div className="mt-4 flex justify-end space-x-4">
+                    <button
+                      onClick={() => handleEditTask(index)}
+                      className="px-4 py-2 bg-yellow-500 text-white rounded-full"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteTask(index)}
+                      className="px-4 py-2 bg-red-500 text-white rounded-full"
+                    >
+                      Delete
+                    </button>
                   </div>
-                  <div className="ml-4">
-                    <strong className="block">Team Leader:</strong>
-                    <p>{task.teamLeader}</p>
-                  </div>
-                  <div className="ml-4">
-                    <strong className="block">Deadline:</strong>
-                    <p>{task.deadline}</p>
-                  </div>
-                </div>
-                <div className="mt-4 flex justify-end space-x-4">
-                  <button
-                    onClick={() => handleEditTask(index)}
-                    className="px-4 py-2 text-white bg-yellow-500 rounded"
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Display Assigned Projects */}
+        <div className="mt-8 space-y-6">
+          <h3 className="text-3xl font-semibold text-white mb-4">Assigned Projects</h3>
+          <button
+            onClick={toggleShowProjects}
+            className="px-6 py-3 w-full sm:w-auto bg-gradient-to-r from-green-500 to-lime-500 text-white rounded-full hover:from-green-600 hover:to-lime-600 shadow-xl transition duration-300"
+          >
+            {showProjects ? "Hide Assigned Projects" : "View Assigned Projects"}
+          </button>
+
+          {showProjects && (
+            <ul className="space-y-6 mt-4">
+              {assignedProjects.length === 0 ? (
+                <p className="text-gray-200 text-center">No projects assigned yet.</p>
+              ) : (
+                assignedProjects.map((project, index) => (
+                  <li
+                    key={index}
+                    className="p-6 bg-[#34495e] rounded-xl shadow-lg border border-gray-600 text-white transition-all hover:scale-105 duration-200"
                   >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteTask(index)}
-                    className="px-4 py-2 text-white bg-red-500 rounded"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+                    <h4 className="text-xl font-bold text-[#5a67d8]">{project.title}</h4>
+                    <p><strong>Manager:</strong> {project.manager}</p>
+                    <p><strong>Description:</strong> {project.description}</p>
+                    <p className="text-green-400 font-bold"><strong>Budget:</strong> ${project.budget}</p>
+                  </li>
+                ))
+              )}
+            </ul>
+          )}
         </div>
       </div>
     </div>

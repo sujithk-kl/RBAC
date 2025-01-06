@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import the useNavigate hook
+import { useNavigate } from "react-router-dom";
 
 const TeamMemberTasks = () => {
   const [taskUpdate, setTaskUpdate] = useState("");
@@ -30,31 +30,33 @@ const TeamMemberTasks = () => {
     localStorage.removeItem("taskUpdates");
     // Optionally remove other session data (e.g., user information, authentication tokens)
 
-    // Navigate to the login or home page
-    navigate("/login"); // Assuming "/login" is the route for the login page
+    // Navigate to the login page
+    navigate("/login"); // Redirect to the login page
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="w-full max-w-3xl p-8 bg-white rounded shadow">
-        <h2 className="text-2xl font-bold text-center mb-6">Team Member Task Page</h2>
+    <div className="flex flex-col items-center min-h-screen px-6 py-8 sm:px-10 lg:px-12 bg-gradient-to-r from-blue-900 via-green-800 to-teal-700">
+      <div className="w-full max-w-4xl p-8 bg-gradient-to-br from-[#2c3e50] via-[#34495e] to-[#16a085] rounded-3xl shadow-2xl">
+        <h2 className="text-4xl font-extrabold text-center text-white mb-8">
+          Team Member Dashboard
+        </h2>
 
         {/* Logout Button */}
-        <div className="flex justify-end mb-4">
+        <div className="absolute top-4 right-4 flex gap-4">
           <button
-            onClick={handleLogout}
-            className="bg-red-500 text-white px-4 py-2 rounded"
+            onClick={handleLogout} // Make sure the logout handler is used
+            className="px-4 py-2 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-full shadow-lg hover:scale-105 transition-all duration-300"
           >
             Logout
           </button>
         </div>
 
         {/* Submit Task Update Section */}
-        <div className="mt-6">
-          <h3 className="text-xl font-semibold mb-4">Submit Task Update</h3>
+        <div className="space-y-6 mb-8">
+          <h3 className="text-3xl font-semibold text-white mb-4">Submit Task Update</h3>
           <form onSubmit={handleSubmitTaskUpdate}>
             <textarea
-              className="w-full p-2 mt-2 border rounded"
+              className="w-full p-4 border-2 border-gray-600 rounded-xl bg-[#1c2833] text-white focus:ring-2 focus:ring-[#5a67d8] focus:outline-none"
               rows="4"
               value={taskUpdate}
               onChange={(e) => setTaskUpdate(e.target.value)}
@@ -63,7 +65,7 @@ const TeamMemberTasks = () => {
             />
             <button
               type="submit"
-              className="w-full py-2 mt-4 bg-blue-600 text-white rounded"
+              className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-full hover:from-blue-600 hover:to-teal-600 shadow-xl transition duration-300 mt-4"
             >
               Submit Update
             </button>
