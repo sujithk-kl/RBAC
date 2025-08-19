@@ -11,7 +11,8 @@ const app = express();
 
 // Configure CORS to allow both production and development origins
 const allowedOrigins = [
-  'https://zeroshield.vercel.app', // Production URL
+  'https://zeroshield.vercel.app',
+  'https://zeroshield.sujithk.me', // Production URL
   'http://localhost:5173' // Development URL
 ];
 
